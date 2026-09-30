@@ -1,6 +1,6 @@
 # Procurement Spend and Cost Analysis
 
-An Excel workbook that turns a year of purchase order data into a spend analysis: where the money went, which departments and categories drive it, how it moved month to month, and how exposed the business is to concentration risk. The workbook is built on a Power Pivot data model, reports through pivot tables and slicers, and finishes in a single-page dashboard with eight charts and a short list of actions.
+An Excel workbook that turns a year of purchase order data into a spend analysis: where the money went, which departments and categories drive it, how it moved month to month, and how exposed the business is to concentration risk. The workbook is built on a Power Pivot data model and finishes in a single-page dashboard with five charts, six KPI cards and a short list of actions.
 
 The headline numbers: **$12.61M** spent across **30 purchase orders** and **461 units**, with **68.7%** of it going to one category (Raw Materials) and **90.4%** landing in two departments (Supply Chain and Production).
 
@@ -12,7 +12,6 @@ The workbook is in [`data/Spend_Cost_Analysis.xlsx`](data/Spend_Cost_Analysis.xl
 - [The data model](#the-data-model)
 - [Dashboard](#dashboard)
 - [Details sheet](#details-sheet)
-- [Pivot tables (Sheet2)](#pivot-tables-sheet2)
 - [Dashboard Data sheet](#dashboard-data-sheet)
 - [Key findings](#key-findings)
 - [How the pieces connect](#how-the-pieces-connect)
@@ -21,14 +20,13 @@ The workbook is in [`data/Spend_Cost_Analysis.xlsx`](data/Spend_Cost_Analysis.xl
 
 ## What is in the workbook
 
-There are four sheets, and each has a different job.
+The sheets have different jobs.
 
 | Sheet | Purpose |
 | --- | --- |
 | Dashboard | The finished, single-page view: six KPI cards, five charts and eight written insights. |
 | Details | The supporting tables behind the charts, plus concentration and risk indicators and a short key-metrics list. |
-| Sheet2 | The working pivot tables, three pivot charts and four slicers. Everything else is linked back to this sheet. |
-| Dashboard Data | The calculation layer. It reads from the pivot tables and reshapes the numbers into the exact ranges the dashboard charts need. |
+| Dashboard Data | The calculation layer. It reshapes the numbers into the exact ranges the dashboard charts need. |
 
 ## The data model
 
@@ -40,7 +38,7 @@ The raw purchase data is not sitting on a worksheet. It lives in an embedded Pow
 - **Dim_Item** describes each item by ID, name, category, sub-category, unit of measure and standard unit price.
 - **Dim_Vendor** describes each supplier by ID, name, category, region, approval status, contract start and end dates, payment terms in days and a strategic/leverage/bottleneck/tail segment.
 
-Five measures sit on top of the model and feed the pivot tables: **Total Spend**, **Total Order**, **Total Order QTY**, **Avg. Order QTY** and **Per Order Value** (spelled "Per Order Vlue" in the pivot header). Because the pivots, charts and slicers all read from one model, a change to a slicer or a refresh of the data moves every number at once.
+Five measures sit on top of the model: **Total Spend**, **Total Order**, **Total Order QTY**, **Avg. Order QTY** and **Per Order Value**. Because everything reads from one model, a refresh of the data moves every number at once.
 
 ## Dashboard
 
@@ -119,7 +117,7 @@ The bottom of the dashboard turns the charts into eight plain-language takeaways
 
 ## Details sheet
 
-The Details sheet holds the tables behind the dashboard charts. Nothing on it is typed in by hand. Every figure links to the Dashboard Data sheet, which links to the pivot tables.
+The Details sheet holds the tables behind the dashboard charts. Nothing on it is typed in by hand. Every figure links to the Dashboard Data sheet.
 
 ![Details sheet overview](screenshots/09-details-sheet-overview.png)
 
@@ -164,49 +162,9 @@ HHI is the Herfindahl-Hirschman Index, the sum of squared percentage shares. Any
 
 A short reference list: peak month (March, $3,764,104), lowest month (September, $4,115), H1 share 68.0%, H2 share 32.0%, Q1 share 62.1%, operations share 90.4% and tail spend 0.3%.
 
-## Pivot tables (Sheet2)
-
-Sheet2 is where the analysis starts. It holds four pivot tables that read from the data model, three pivot charts, and four slicers (Quarter, Year, Region and Vendor Name) that filter all of them together.
-
-![Sheet2 overview](screenshots/22-pivot-sheet-overview.png)
-
-### Pivot 1: headline measures
-
-![Headline measures pivot](screenshots/15-pivot-kpi-measures.png)
-
-A single-row pivot with the five model measures side by side: Total Spend 12,614,482.61, Total Order 30, Total Order QTY 461, Avg. Order QTY 15.37 and Per Order Value 27,363.30. The last figure is total spend divided by total quantity, which is why it matches the Avg spend per unit card. This row feeds the KPI cards on the dashboard.
-
-### Pivot 2: spend by department
-
-![Spend by department pivot and chart](screenshots/16-pivot-spend-by-department.png)
-
-Department names down the rows, with Total Spend shown as a **percent of grand total** instead of a dollar amount. Admin is 4.84%, IT 4.72%, Production 43.83% and Supply Chain 46.62%. The pivot chart underneath, Total Spend by Dept., is a donut of the same four shares.
-
-### Pivot 3: spend by category
-
-![Spend by category pivot and chart](screenshots/17-pivot-spend-by-category.png)
-
-Item categories down the rows with total spend in dollars, from IT Equipment ($2,386,315) and Logistics ($1,197,774) through MRO, Office Supplies and Packaging to Raw Materials ($8,664,488). The pivot chart, Category wise Spend, is a pie of the same values.
-
-### Pivot 4: spend by month
-
-![Spend by month pivot](screenshots/18-pivot-spend-by-month.png)
-
-A two-level row layout with month number and month name, so the months sort in calendar order (January to December) instead of alphabetically. It is the source for the monthly trend and for every month-by-month calculation downstream.
-
-### Pivot chart: month by spend trend
-
-![Month by spend trend pivot chart](screenshots/19-pivot-chart-month-trend.png)
-
-A column chart of the monthly pivot, with data labels on each column. It is the working version of the trend that the dashboard later redraws with the monthly average line.
-
-### Slicers
-
-Four slicers sit beside the pivots and are connected to every pivot table through a shared cache: **Quarter**, **Year**, **Region** and **Vendor Name**. Clicking a region or a vendor re-cuts all four pivots and all three pivot charts at the same moment, which makes it easy to ask questions such as how one vendor's spend splits across departments.
-
 ## Dashboard Data sheet
 
-The Dashboard Data sheet is the plumbing between the pivots and the dashboard. It reads from Sheet2 and reshapes the numbers into clean, contiguous ranges, because charts work best from tidy blocks of cells.
+The Dashboard Data sheet is the plumbing behind the dashboard. It reshapes the model's numbers into clean, contiguous ranges, because charts work best from tidy blocks of cells.
 
 ![Dashboard Data overview](screenshots/23-dashboard-data-overview.png)
 
@@ -233,17 +191,16 @@ Below the calculations sits a second group of ranges named for what they feed: m
 
 ## How the pieces connect
 
-The flow runs in one direction. Power Query loads the five source tables into the data model. The model's measures feed the four pivot tables on Sheet2, and the slicers filter all of them together. The Dashboard Data sheet reads from those pivots and reshapes the results. The Details sheet and the Dashboard charts then read from Dashboard Data. Nothing downstream of the pivots is hard-coded, so refreshing the model updates every number, chart and percentage in the workbook.
+The flow runs in one direction. Power Query loads the five source tables into the data model, and the model's measures produce the summary numbers. The Dashboard Data sheet reshapes those numbers, and the Details sheet and the dashboard charts then read from it. Nothing downstream is hard-coded, so refreshing the model updates every number, chart and percentage in the workbook.
 
 ## How to use the file
 
-1. Download [`data/Spend_Cost_Analysis.xlsx`](data/Spend_Cost_Analysis.xlsx) and open it in desktop Excel. The data model, pivot tables and slicers need Excel 2013 or later on Windows or a recent Excel for Mac. Other spreadsheet programs can open the file but may not display the slicers or refresh the model.
+1. Download [`data/Spend_Cost_Analysis.xlsx`](data/Spend_Cost_Analysis.xlsx) and open it in desktop Excel. The data model needs Excel 2013 or later on Windows or a recent Excel for Mac. Other spreadsheet programs can open the file but may not refresh the model.
 2. Start on the **Dashboard** sheet for the summary.
 3. Go to **Details** for the tables and risk indicators.
-4. Go to **Sheet2** and click the slicers to filter by quarter, year, region or vendor. Every pivot and pivot chart updates together.
-5. To refresh after the source data changes, use Data > Refresh All. The downstream sheets recalculate from the pivots.
+4. To refresh after the source data changes, use Data > Refresh All. The downstream sheets recalculate from the model.
 
-The screenshots in this repository are static exports of each sheet. The slicers and the data model only work inside the workbook itself.
+The screenshots in this repository are static exports of each sheet. The data model only works inside the workbook itself.
 
 ## Repository layout
 
@@ -268,14 +225,8 @@ procurement-analysis/
     ├── 12-details-department-ranking.png
     ├── 13-details-risk-indicators.png
     ├── 14-details-key-metrics.png
-    ├── 15-pivot-kpi-measures.png
-    ├── 16-pivot-spend-by-department.png
-    ├── 17-pivot-spend-by-category.png
-    ├── 18-pivot-spend-by-month.png
-    ├── 19-pivot-chart-month-trend.png
     ├── 20-dashboard-data-calculations.png
     ├── 21-dashboard-data-chart-feeds.png
-    ├── 22-pivot-sheet-overview.png
     └── 23-dashboard-data-overview.png
 ```
 
